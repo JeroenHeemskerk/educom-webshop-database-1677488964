@@ -1,9 +1,9 @@
 <?php
 function showContent($data)
 {
-    echo '
-        <div class="form-style-3">
-          <form method="post" action="index.php">
+  showFormStart();
+  echo '
+       
             <fieldset>
               <legend>Login:</legend>             
               <label for="email"><span class="required">Email*</span><input type="email" class="input-field" name="email" value="' . $data["email"] . '" /></label>
@@ -18,4 +18,10 @@ function showContent($data)
           </form>
         </div>
  ';
+}
+
+function showFormStart()
+{
+  echo '<div class="form-style-3">
+  <form method="post" action="index.php">';
 }

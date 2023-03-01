@@ -127,7 +127,7 @@ function showHeadSection($page)
     echo '<head>
     <title>' . strtoupper($page) . '</title>
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="icon" type="image/x-icon" href="C:\xampp\htdocs\educom-webshop-basis\favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
   </head>';
 }
 

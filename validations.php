@@ -11,211 +11,218 @@ function test_input($data)
     return $data;
 }
 
+function validateName()
+{
+
+    $name = test_input((getPostVar("name")));
+    $nameErr = '';
+
+    if (empty($name)) {
+        $nameErr = "Name is required";
+    } else if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
+        $nameErr = "Only letters and white space allowed";
+    }
+
+    return array('name' => $name, 'nameErr' => $nameErr);
+}
+
 function validateEmail()
 {
 
-    $email = $emailErr = '';
+    $email = test_input(getPostVar("email"));
+    $emailErr = '';
 
-    if (empty($_POST["email"])) {
+    if (empty($email)) {
         $emailErr = "Email is required";
-    } else {
-        $email = test_input($_POST["email"]);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
-        }
+    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Invalid email format";
     }
     return array('email' => $email, 'emailErr' => $emailErr);
 }
 
+function validatePassword()
+{
+
+    $password = test_input(getPostVar("password"));
+    $passwordErr = '';
+
+    if (empty($password)) {
+        $passwordErr = "Password is required";
+    }
+    return array('password' => $password, 'passwordErr' => $passwordErr);
+}
+
 function validateContact()
 {
-    // initate the variables     
+    // initate the variables   
 
-    $name = test_input(getPostVar("name"));
-    $email = test_input(getPostVar("email"));
-    $phone = test_input(getPostVar("phone"));
-    $salutation = test_input(getPostVar("salutation"));
-    $contactOption = test_input(getPostVar("contactOption"));
-    $message = test_input(getPostVar("message"));
-
-    $nameErr = $emailErr = $phoneErr = $contactOptionErr = $messageErr = '';
-    $valid = false;
+    $data = array(
+        "salutation" => test_input(getPostVar("salutation")), "name" => "",
+        "email" => "", "phone" => test_input(getPostVar("phone")),
+        "contactOption" => test_input(getPostVar("contactOption")),
+        "message" => test_input(getPostVar("message")),
+        "nameErr" => "", "emailErr" => "", "phoneErr" => "",
+        "contactOptionErr" => "", "messageErr" => "",
+        "valid" => false
+    );
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // validate the 'POST' data
-        if (empty($name)) {
-            $nameErr = "Name is required";
-        } else if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
-            $nameErr = "Only letters and white space allowed";
+
+        $data = array_merge($data, validateName());
+
+        $data = array_merge($data, validateEmail());
+
+        if (empty($data['phone'])) {
+            $data['phoneErr'] = "Phone is required";
         }
 
-        // validateEmail();
-        if (empty($email)) {
-            $emailErr = "Email is required";
-        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
+        if (empty($data['contactOption'])) {
+            $data['contactOptionErr'] = "Contact option is required";
         }
 
-        if (empty($phone)) {
-            $phoneErr = "Phone is required";
+        if (empty($data['message'])) {
+            $data['messageErr'] = "Message is required";
         }
 
-        if (empty($contactOption)) {
-            $contactOptionErr = "Contact option is required";
-        }
-
-        if (empty($message)) {
-            $messageErr = "Message is required";
-        }
-
-        if (strcmp($nameErr, '') == 0 && strcmp($emailErr, '') == 0 && strcmp($phoneErr, '') == 0 && strcmp($contactOptionErr, '') == 0 && strcmp($messageErr, '') == 0) {
-            $valid = true;
+        if (
+            $data['nameErr'] === "" && $data['emailErr'] === ""
+            && $data['phoneErr'] === "" && $data['contactOptionErr'] === ""
+            && $data['messageErr'] === ""
+        ) {
+            $data['valid'] = true;
         };
     }
 
-    return array("salutation" => $salutation, "name" => $name, "email" => $email, "phone" => $phone, "contactOption" => $contactOption, "message" => $message, "nameErr" => $nameErr, "emailErr" => $emailErr, "phoneErr" => $phoneErr, "contactOptionErr" => $contactOptionErr, "messageErr" => $messageErr, "valid" => $valid);
+    return $data;
 }
 
 function validateRegistration()
 {
     // initate the variables     
-    $name = test_input(getPostVar("name"));
-    $email = test_input(getPostVar("email"));
-    $password = test_input(getPostVar("password"));
-    $confirmPassword = test_input(getPostVar("confirmPassword"));
 
-    $nameErr = $emailErr = $passwordErr = $confirmPasswordErr = '';
-    $valid = false;
+    $data = array(
+        "name" => "", "email" => "", "password" => "",
+        "confirmPassword" => test_input(getPostVar("confirmPassword")),
+        "nameErr" => "", "emailErr" => "", "passwordErr" => "",
+        "confirmPasswordErr" => "", "valid" => false
+    );
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // validate the 'POST' data
 
-        if (empty($name)) {
-            $nameErr = "Name is required";
-        } else if (!preg_match("/^[a-zA-Z-' ]*$/", $name)) {
-            $nameErr = "Only letters and white space allowed";
-        }
+        $data = array_merge($data, validateName());
+        $data = array_merge($data, validateEmail());
+        $data = array_merge($data, validatePassword());
 
-        //validateEmail();
-        if (empty($email)) {
-            $emailErr = "Email is required";
-        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Invalid email format";
-        }
-
-        if (empty($password)) {
-            $passwordErr = "Password is required";
-        }
-
-        if (empty($confirmPassword)) {
-            $confirmPasswordErr = "Please repeat your password";
-        } else if (strcmp($confirmPassword, $password) != 0) {
-            $confirmPasswordErr = "Passwords does not match";
+        if (empty($data['confirmPassword'])) {
+            $data['confirmPasswordErr'] = "Please repeat your password";
+        } else if (strcmp($data['confirmPassword'], $data['password']) != 0) {
+            $data['confirmPasswordErr'] = "Passwords do not match";
         }
 
 
         // Check if email is already in use, if not: create new user
 
-        if ($name !== "" && $email !== "" && $password !== "" && $confirmPassword !== "" && $nameErr === "" && $emailErr === "" && $passwordErr === "" && $confirmPasswordErr === "") {
+        if (
+            $data['name'] !== "" && $data['email'] !== "" && $data['password'] !== "" &&
+            $data['confirmPassword'] !== "" && $data['nameErr'] === "" && $data['emailErr'] === "" &&
+            $data['passwordErr'] === "" && $data['confirmPasswordErr'] === ""
+        ) {
             //try catch 
-            if (doesEmailExist($email) == true) {
-                $emailErr = "An account with this email is already in use";
+            if (doesEmailExist($data['email'])) {
+                $data['emailErr'] = "An account with this email is already in use";
             }
 
-            if ($emailErr === "") {
-                $valid = true;
+            if ($data['emailErr'] === "") {
+                $data['valid'] = true;
             }
         }
     }
 
-    return array("name" => $name, "email" => $email, "password" => $password, "confirmPassword" => $confirmPassword, "nameErr" => $nameErr, "emailErr" => $emailErr, "passwordErr" => $passwordErr, "confirmPasswordErr" => $confirmPasswordErr, "valid" => $valid);
+    return $data;
 }
 
 function validateLogin()
 {
 
-    // initiate the variables 
-    $userid = $name = $email = $password = '';
-    $emailErr = $passwordErr = '';
-    $valid = false;
+    // initiate the variables     
+
+    $data = array(
+        "userid" => test_input(getPostVar("userid")),
+        "name" => test_input(getPostVar("name")), "email" => "",
+        "password" => "", "emailErr" => "",
+        "passwordErr" => "",  "valid" => false
+    );
+
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // validate the 'POST' data      
-
-        if (empty($_POST["email"])) {
-            $emailErr = "Email is required";
-        } else {
-            $email = test_input($_POST["email"]);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $emailErr = "Invalid email format";
-            }
-        }
-        if (empty($_POST["password"])) {
-            $passwordErr = "Password is required";
-        } else {
-            $password = test_input($_POST["password"]);
-        }
+        $data = array_merge($data, validateEmail());
+        $data = array_merge($data, validatePassword());
 
         // check if all data are valid       
-        if ($email !== "" && $password !== "" && $emailErr === "" && $passwordErr === "") {
+        if (
+            $data['email'] !== "" && $data['password'] !== "" &&
+            $data['emailErr'] === "" && $data['passwordErr'] === ""
+        ) {
             try {
-                $authenticate = authenticateUser($email, $password);
+                $authenticate = authenticateUser($data['email'], $data['password']);
                 switch ($authenticate['result']) {
                     case RESULT_OK:
-                        $valid = true;
-                        $name = $authenticate['user']['name'];
-                        $userid = $authenticate['user']['id'];
+                        $data['valid'] = true;
+                        $data['name'] = $authenticate['user']['name'];
+                        $data['userid'] = $authenticate['user']['id'];
                         break;
                     case RESULT_WRONG:
-                        $emailErr = "Email does not exist or password does not match";
+                        $data['emailErr'] = "Email does not exist or
+                         password does not match";
                         break;
                 }
             } catch (Exception $e) {
-                $emailErr = "There is a technical issue, please try again later.";
+                $data['emailErr'] = "There is a technical issue, please try again later.";
                 debug_to_console("Authentication failed: " . $e->getMessage());
             }
         }
     }
 
-    // returning the data
-    return array("userid" => $userid, "name" => $name, "email" => $email, "password" => $password, "emailErr" => $emailErr, "passwordErr" => $passwordErr,  "valid" => $valid);
+    return $data;
 }
 
 function validateChangePassword()
 {
-    $password = $newPassword = '';
-    $passwordErr = $newPasswordErr = '';
-    $valid = false;
+    $data = array(
+        "id" => getLoggedInUserId(), "password" => "",
+        "newPassword" => test_input(getPostVar("newPassword")), "passwordErr" => "",
+        "newPasswordErr" => "", "valid" => false
+    );
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-        if (empty($_POST["password"])) {
-            $passwordErr = "Password is required";
-        } else {
-            $password = test_input($_POST["password"]);
+        $data = array_merge($data, validatePassword());
+
+        if (empty($data['newPassword'])) {
+            $data['newPasswordErr'] = "New password is required";
         }
 
-        if (empty($_POST["newPassword"])) {
-            $newPasswordErr = "New password is required";
-        } else {
-            $newPassword = test_input($_POST["newPassword"]);
-        }
-
-        if ($password !== "" && $newPassword !== "" && $passwordErr === "" && $newPasswordErr === "")
+        if (
+            $data['password'] !== "" && $data['newPassword'] !== "" &&
+            $data['passwordErr'] === "" &&
+            $data['newPasswordErr'] === ""
+        )
             try {
-                $authenticate = authenticateCurrentUser(getLoggedInUserId(), $password);
+                $authenticate =
+                    authenticateCurrentUser(getLoggedInUserId(), $data['password']);
                 switch ($authenticate['result']) {
                     case RESULT_OK:
-                        $valid = true;
+                        $data['valid'] = true;
                         break;
                     case RESULT_WRONG:
-                        $passwordErr = "Password does not match";
+                        $data['passwordErr'] = "Password does not match";
                         break;
                 }
             } catch (Exception $e) {
-                $passwordErr = "There is a technical issue, please try again later.";
+                $data['passwordErr'] = "There is a technical issue, please try again later.";
                 debug_to_console("Authentication failed: " . $e->getMessage());
             }
     }
-    return array("id" => getLoggedInUserId(), "password" => $password, "newPassword" => $newPassword, "passwordErr" => $passwordErr, "newPasswordErr" => $newPasswordErr, "valid" => $valid);
+
+    return $data;
 }
