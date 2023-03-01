@@ -57,7 +57,13 @@ function processRequest($page)
         case 'register':
             $data = validateRegistration();
             if ($data['valid']) {
-                $page = 'login';
+                try {
+                    storeUser($data['email'], $data['name'], $data['password']);
+                    $page = 'login';
+                } catch (Exception $e) {
+                    $data['emailErr'] = "Name could not be stored due to a technical error";
+                    debug_to_console("Store user failed" . $e->getMessage());
+                }
             }
             break;
         case 'login':
@@ -70,6 +76,18 @@ function processRequest($page)
         case 'logout':
             logUserOut();
             $page = 'home';
+            break;
+        case 'changepassword':
+            $data = validateChangePassword();
+            if ($data['valid']) {
+                try {
+                    updatePassword($data['id'], $data['newPassword']);
+                    $page = 'home';
+                } catch (Exception $e) {
+                    $data['passwordErr'] = "Password could not be changed due to a technical error";
+                    debug_to_console("Change user password failed" . $e->getMessage());
+                }
+            }
             break;
         default:
             $page = 'unknown';
@@ -143,6 +161,7 @@ function showHeader($page)
         case 'contact':
         case 'register':
         case 'login':
+        case 'changepassword':
             echo '<header>
         <h1>' . strtoupper($page) . '</h1>
       </header>';
@@ -156,34 +175,36 @@ function showHeader($page)
 function showMenu()
 
 {
-    $pages = ['home', 'about', 'contact', 'register', 'login', 'logout'];
-    echo '<ul class="menu"><nav>';
-
-    foreach ($pages as $page) {
-        if ($page === 'logout') {
-            if (isset($_SESSION['username'])) {
-                echo '
-                    <a
-                    href="index.php?page=' . $page . '"
-                    ><li>' . strtoupper($page) . " " . strtoupper($_SESSION['username'])  . '</li></a>';
-            }
-        } elseif ($page === 'login' || $page === 'register') {
-            if (!isset($_SESSION['username'])) {
-                echo '
-                    <a
-                    href="index.php?page=' . $page . '"
-                    ><li>' . strtoupper($page) .  '</li></a>
-                    ';
-            }
-        } else {
-            echo '
-                <a
-                href="index.php?page=' . $page . '"
-                ><li>' . strtoupper($page) . '</li></a>
-                 ';
-        }
-    };
-    echo "</nav></ul>";
+    echo '<ul class="menu"><nav>
+    <a href="index.php?page=home">
+    <li>' . strtoupper('home') . '</li>
+    </a>
+    <a href="index.php?page=about">
+    <li>' . strtoupper('about') . '</li>
+    </a>
+    <a href="index.php?page=contact">
+    <li>' . strtoupper('contact') .  '</li>
+    </a>';
+    if (isUserLoggedIn()) {
+        echo '
+        <a href="index.php?page=logout">
+        <li>' . strtoupper('logout') . " " . strtoupper($_SESSION['username']) . '</li>
+        </a>
+        <a href="index.php?page=changepassword">
+        <li>' . strtoupper('change password') .  '</li>
+        </a>
+        ';
+    } else {
+        echo '
+        <a href="index.php?page=login">
+        <li>' . strtoupper('login') .  '</li>
+        </a>
+        <a href="index.php?page=register">
+        <li>' . strtoupper('register') .  '</li>
+        </a>
+        ';
+    }
+    echo '</nav></ul>';
 }
 
 function showFooter()
@@ -210,4 +231,12 @@ function showBodyEnd()
 function endDocument()
 {
     echo  '</html>';
+}
+
+function debug_to_console($data)
+{
+    $output = $data;
+    if (is_array($output))
+        $output = implode(',', $output);
+    echo "<script>console.log('Debug Objects: " . $output . "');</script>";
 }

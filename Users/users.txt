@@ -16,3 +16,5 @@ rem@art.com|rembrandt|123
 beertje@boem.nl|beer|123
 panda@zeldzaam.nl|panda|123
 wasbeer@leuk.nl|wasbeer|123
+lvangammeren@yahoo.co.uk|Lydia van Gammeren|123
+lvangammeren@yahoo.co.uk|Lydia van Gammeren|123

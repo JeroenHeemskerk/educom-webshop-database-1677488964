@@ -1,26 +1,95 @@
 <?php
 
+function connectWithDB()
+{
+
+    $servername = "localhost";
+    $username = "webshop_Lydia";
+    $password = "shoplvg";
+    $dbname = "lydia_webshop";
+
+    // Create connection
+    $conn = @mysqli_connect($servername, $username, $password, $dbname);
+
+    // Check connection
+    if (!$conn) {
+        throw new Exception("Connection failed: " . mysqli_connect_error());
+    }
+    return $conn;
+}
+
 function findUserByEmail($email)
 {
-    $file = fopen('users/users.txt', 'r');
     $user = NULL;
-    $line = fgets($file);
-
-    while (!feof($file)) {
-        $line = fgets($file);
-        $user_data = explode("|", $line);
-        if ($email === $user_data[0]) {
-            $user = array("email" => $user_data[0], "name" => $user_data[1], "password" => $user_data[2]);
+    $conn = connectWithDB();
+    try {
+        $sql = "SELECT * from users WHERE email='$email';";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            throw new Exception("No result " . mysqli_error($conn));
         }
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $user = $row;
+                debug_to_console($user);
+            }
+        }
+    } finally {
+        mysqli_close($conn);
     }
-    fclose($file);
+
+    return $user;
+}
+
+function findUserById($id)
+{
+
+    $user = NULL;
+    $conn = connectWithDB();
+    try {
+        $sql = "SELECT * from users WHERE id='$id';";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            throw new Exception("No result " . mysqli_error($conn));
+        }
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $user = $row;
+                debug_to_console($user);
+            }
+        }
+    } finally {
+        mysqli_close($conn);
+    }
+
     return $user;
 }
 
 function saveUser($email, $name, $password)
 {
-    $file = fopen('users/users.txt', 'a');
-    $newUser = $email . '|' . $name .  '|' . $password;
-    fwrite($file, PHP_EOL . $newUser);
-    fclose($file);
+    $conn = connectWithDB();
+    try {
+        $sql = "INSERT INTO users (email, name, password)
+    VALUES ('$email', '$name', '$password')";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            throw new Exception("Insert failed" . mysqli_error($conn));
+        }
+    } finally {
+        mysqli_close($conn);
+    }
+}
+
+function changePassword($id, $password)
+{
+    $conn = connectWithDB();
+    try {
+        $sql = "UPDATE users SET password='$password' WHERE id='$id'";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            throw new Exception("Update password failed" . mysqli_error($conn));
+        }
+    } finally {
+        mysqli_close($conn);
+    }
 }

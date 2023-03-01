@@ -10,8 +10,19 @@ function authenticateUser($email, $password)
 {
     $user = findUserByEmail($email);
     if (empty($user) || $user['password'] != $password) {
-        return array("result" => RESULT_WRONG, "user" => $user);
+        return array("result" => RESULT_WRONG);
     }
+    return array("result" => RESULT_OK, "user" => $user);
+}
+
+function authenticateCurrentUser($id, $password)
+{
+    $user = findUserById($id);
+    debug_to_console($password . "test password");
+    if (empty($user) || $user['password'] != $password) {
+        return array("result" => RESULT_WRONG);
+    }
+
     return array("result" => RESULT_OK, "user" => $user);
 }
 
@@ -27,4 +38,9 @@ function doesEmailExist($email)
 function storeUser($email, $name, $password)
 {
     saveUser($email, $name, $password);
+}
+
+function updatePassword($id, $password)
+{
+    changePassword($id, $password);
 }
