@@ -17,6 +17,7 @@ function showContactContent($data)
     false,
     SALUTATIONS
   );
+  showFormFieldSetEnd();
   showFormFieldSetStart('Preferred contact option *');
   showFormField('contactOption', 'How can we reach you?', 'radio', $data, true, COM_PREFS);
   showFormFieldSetEnd();

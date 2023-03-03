@@ -14,7 +14,7 @@ function showFormFieldSetStart($legend)
 
 function showFormField($field, $label, $type, $data, $required = true, $options = null)
 {
-    echo '<label for="' . $field . '"><span class="' . $required . '">' . $label . '*</span>';
+    echo '<label for="' . $field . '"><span class="' . ($required ? "required" : "optional") . '">' . $label . '*</span>';
 
     switch ($type) {
 
@@ -27,9 +27,9 @@ function showFormField($field, $label, $type, $data, $required = true, $options 
             break;
 
         case "radio":
-            echo '<p>------------------------</p><p>------------------------</p>';
+            
             foreach ($options as $key => $value) {
-                echo '<input ' . ($key == $data[$field] ? ' checked ' : '') . 'type="' . $type . '"  name="' . $field . '" id="' . $key . '" value="' . $key . '"><label for="' . $key . '">' . $value . '</label>';
+                echo '<label for="' . $key . '">' . $value . '</label><input ' . ($key == $data[$field] ? ' checked ' : '') . 'type="' . $type . '"  name="' . $field . '" id="' . $key . '" value="' . $key . '">';
             }
             break;
 

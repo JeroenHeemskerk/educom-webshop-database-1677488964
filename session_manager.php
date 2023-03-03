@@ -11,6 +11,11 @@ function getLoggedInUserId()
     return $_SESSION['userid'];
 }
 
+function getLoggedInUserName()
+{
+    return $_SESSION['username'];
+}
+
 function logUserOut()
 {
     session_unset();

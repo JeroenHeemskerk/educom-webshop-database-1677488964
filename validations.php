@@ -64,7 +64,7 @@ function validateContact()
         "contactOption" => test_input(getPostVar("contactOption")),
         "message" => test_input(getPostVar("message")),
         "nameErr" => "", "emailErr" => "", "phoneErr" => "",
-        "contactOptionErr" => "", "messageErr" => "",
+        "contactOptionErr" => "", "messageErr" => "", "genericErr" => "",
         "valid" => false
     );
 
@@ -78,8 +78,14 @@ function validateContact()
             $data['phoneErr'] = "Phone is required";
         }
 
+        if (!array_key_exists($data['salutation'], SALUTATIONS)) {
+            $data['genericErr'] = "invalid option";
+        }
+
         if (empty($data['contactOption'])) {
             $data['contactOptionErr'] = "Contact option is required";
+        } else if (!array_key_exists($data['contactOption'], COM_PREFS)) {
+            $data['genericErr'] = "invalid option";
         }
 
         if (empty($data['message'])) {

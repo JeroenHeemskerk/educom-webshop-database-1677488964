@@ -92,6 +92,15 @@ function processRequest($page)
         default:
             $page = 'unknown';
     }
+    $data['menu'] = array('home' => 'Home', 'about' => 'About', 'contact' => 'Contact');
+    if (isUserLoggedIn()) {
+        $data['menu']['logout'] = "Logout " . getLoggedInUserName();
+        $data['menu']['changepassword'] = "Change Password ";
+    } else {
+        $data['menu']['register'] = "Register";
+        $data['menu']['login'] = "Login";
+        /* ... */
+    }
     $data['page'] = $page;
     return $data;
 }
@@ -138,7 +147,7 @@ function showBody($current_page, $data)
 {
     showBodyStart();
     showHeader($current_page);
-    showMenu();
+    showMenu($data);
     showContent($data);
     showFooter();
     showBodyEnd();
@@ -172,39 +181,22 @@ function showHeader($page)
     }
 }
 
-function showMenu()
+function showMenu($data)
 
 {
-    echo '<ul class="menu"><nav>
-    <a href="index.php?page=home">
-    <li>' . strtoupper('home') . '</li>
-    </a>
-    <a href="index.php?page=about">
-    <li>' . strtoupper('about') . '</li>
-    </a>
-    <a href="index.php?page=contact">
-    <li>' . strtoupper('contact') .  '</li>
-    </a>';
-    if (isUserLoggedIn()) {
-        echo '
-        <a href="index.php?page=logout">
-        <li>' . strtoupper('logout') . " " . strtoupper($_SESSION['username']) . '</li>
-        </a>
-        <a href="index.php?page=changepassword">
-        <li>' . strtoupper('change password') .  '</li>
-        </a>
-        ';
-    } else {
-        echo '
-        <a href="index.php?page=login">
-        <li>' . strtoupper('login') .  '</li>
-        </a>
-        <a href="index.php?page=register">
-        <li>' . strtoupper('register') .  '</li>
-        </a>
-        ';
+    echo '<ul class="menu"><nav>';
+    foreach ($data['menu'] as $link => $label) {
+        showMenuItem($link, $label);
     }
     echo '</nav></ul>';
+}
+
+function showMenuItem($link, $label)
+{
+    echo '
+        <a href="index.php?page=' . $link . '">
+        <li>' . $label .  '</li>
+        </a>';
 }
 
 function showFooter()
