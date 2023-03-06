@@ -2,7 +2,7 @@
 
 function showContent($data)
 {
-
+    var_dump($_SESSION);
     echo '<div class="products">';
     if (($data['shoppingcartproducts'])) {
         foreach ($data['shoppingcartproducts'] as $product) {
