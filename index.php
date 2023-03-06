@@ -47,23 +47,21 @@ function processRequest($page)
 
     switch ($page) {
         case 'home':
-            $page = 'home';
-            break;
         case 'about':
-            $page = 'about';
+        case 'shoppingcart':
             break;
         case 'webshop':
             $data = getWebshopProducts();
-            $page = 'webshop';
             break;
         case 'productdetail':
             $id = getUrlVar("id");
             $data = getProductDetails($id);
-            $page = 'productdetail';            
             break;
         case 'contact':
             $data = validateContact();
-            $page = 'contact';
+            if ($data['valid']) {
+                $page = 'thanks';
+            };
             break;
         case 'register':
             $data = validateRegistration();
@@ -108,6 +106,7 @@ function processRequest($page)
     if (isUserLoggedIn()) {
         $data['menu']['logout'] = "Logout " . getLoggedInUserName();
         $data['menu']['changepassword'] = "Change Password ";
+        $data['menu']['shoppingcart'] = "Shopping Cart ";
     } else {
         $data['menu']['register'] = "Register";
         $data['menu']['login'] = "Login";
@@ -185,6 +184,7 @@ function showHeader($page)
         case 'changepassword':
         case 'webshop':
         case 'productdetail':
+        case 'shoppingcart':
             echo '<header>
         <h1>' . strtoupper($page) . '</h1>
       </header>';

@@ -2,7 +2,7 @@
 
 include 'forms.php';
 
-function showContactContent($data)
+function showContent($data)
 {
   showFormStart();
   showFormFieldSetStart('Personal');
@@ -26,14 +26,4 @@ function showContactContent($data)
   showFormField('message', 'Message', 'textarea', $data);
   showFormFieldSetEnd();
   showFormEnd('Submit', 'contact');
-}
-
-function showContent($data)
-{
-  if ($data['valid'] === true) {
-    include('thanks.php');
-    showThankYouContent($data);
-  } else {
-    showContactContent($data);
-  }
 }

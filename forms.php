@@ -14,22 +14,27 @@ function showFormFieldSetStart($legend)
 
 function showFormField($field, $label, $type, $data, $required = true, $options = null)
 {
-    echo '<label for="' . $field . '"><span class="' . ($required ? "required" : "optional") . '">' . $label . '*</span>';
+    echo '<label for="' . $field . '"><span class="' .
+        ($required ? "required" : "optional") . '">' . $label . '*</span>';
 
     switch ($type) {
 
         case "select":
             echo '<select name="' . $field . '" class="select-field">';
             foreach ($options as $key => $value) {
-                echo '<option ' . ($key == $data[$field] ? ' selected ' : '') . 'value="' . $key . '">' . $value . '</option>';
+                echo '<option ' . ($key == $data[$field] ? ' selected ' : '') .
+                    'value="' . $key . '">' . $value . '</option>';
             }
             echo '</select>';
             break;
 
         case "radio":
-            
+
             foreach ($options as $key => $value) {
-                echo '<label for="' . $key . '">' . $value . '</label><input ' . ($key == $data[$field] ? ' checked ' : '') . 'type="' . $type . '"  name="' . $field . '" id="' . $key . '" value="' . $key . '">';
+                $optionId = $field . '_' . $key;
+                echo '<label for="' . $key . '">' . $value . '</label><input ' .
+                    ($key == $data[$field] ? ' checked ' : '') . 'type="' . $type . '"
+                   name="' . $field . '" id="' . $optionId . '" value="' . $key . '">';
             }
             break;
 

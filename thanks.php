@@ -1,6 +1,6 @@
 <?PHP
 
-function showThankYouContent($data)
+function showContent($data)
 {
     echo '
         <p>Thank you for your reply!</p>
