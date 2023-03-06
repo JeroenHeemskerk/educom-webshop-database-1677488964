@@ -1,5 +1,4 @@
 <?php
-include 'forms.php';
 
 function showContent($data)
 {

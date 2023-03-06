@@ -1,6 +1,6 @@
 <?php
 
-include 'user_service.php';
+include_once 'user_service.php';
 define("SALUTATIONS", array("mrs" => "Mrs.", "ms" => "Ms.", "mx" => "Mx.", "mr" => "Mr."));
 define("COM_PREFS", array("phone" => "phone", "email" => "email"));
 

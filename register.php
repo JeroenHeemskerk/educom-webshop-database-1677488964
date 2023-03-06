@@ -1,6 +1,6 @@
 <?php
 
-include 'forms.php';
+include_once 'forms.php';
 
 
 function showContent($data)

@@ -108,7 +108,7 @@ function getAllProducts()
         if (mysqli_num_rows($result) > 0) {
             while ($row = mysqli_fetch_assoc($result)) {
                 $product = $row;
-                array_push($products, $product);
+                $products[$product['id']] = $product;
             }
         }
     } finally {

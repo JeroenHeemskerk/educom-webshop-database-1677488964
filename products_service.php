@@ -1,5 +1,7 @@
 <?php
 
+include_once 'forms.php';
+
 function getWebshopProducts()
 {
     $products = array();
@@ -31,23 +33,22 @@ function addAction($nextpage, $action, $productId = NULL, $name = NULL, $addquan
     if (isUserLoggedIn()) {
         showFormStart();
         echo '<input type="hidden" name="action" value="' . $action . '">' . PHP_EOL;
-        if (!empty($productId)) {
+        if ($productId) {
             echo '<input type="hidden" name="id" value="' . $productId . '">' . PHP_EOL;
         }
-        if (!empty($name)) {
+        if ($name) {
             echo '<input type="hidden" name="name" value="' . $name . '">' . PHP_EOL;
         }
         echo '<input type="hidden" name="page" value="' . $nextpage . '">' . PHP_EOL;
         if ($addquantity !== 0) {
             $cart = getShoppingcart();
-            $quantity = ($addquantity + (float)getArrayVar($cart, $productId, 0));
+            $quantity = ((float) $addquantity + getArrayVar($cart, $productId, 0));
             echo '<input type="hidden" name="quantity" value="' . $quantity . '">' . PHP_EOL;
             if ($quantity == 0) {
                 echo '<input type="hidden" name="action" value="removeFromShoppingcart">' . PHP_EOL;
             }
         }
         showFormEnd("Add to Shoppingcart", "webshop");
-        echo '</form>';
     }
 }
 
@@ -56,7 +57,7 @@ function handleActions()
     $data = array();
     $action = getPostVar("action");
     switch ($action) {
-        case 'addToShoppingCart':
+        case 'addToShoppingcart':
             $productId = getPostVar("id");
             $quantity = getPostVar("quantity");
             addToShoppingCart($productId, $quantity);
@@ -77,7 +78,7 @@ function getShoppingcartProducts()
         foreach ($shoppingcart as $productId => $quantity) {
             $product = getArrayVar($products, $productId, NULL);
 
-            $subtotal = number_format((float)($quantity * $product['price']), 2);
+            $subtotal = number_format((float)($quantity * (float) $product['price']), 2);
             $shoppingcartproduct = array(
                 'productId' => $productId, 'quantity' => $quantity, 'subtotal' => $subtotal,
                 'price' => $product['price'], 'name' => $product['name'], 'filename_img' => $product['filename_img']

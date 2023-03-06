@@ -1,6 +1,6 @@
 <?php
 
-include 'forms.php';
+include_once 'forms.php';
 
 function showContent($data)
 {
@@ -11,8 +11,14 @@ function showContent($data)
         echo '<div class="text">';
         echo '<div class="id"><p>Id: ' . $product['id'] . '</p></div>' . PHP_EOL;
         echo '<div class="price"><p>Price: &euro;' . $product['price'] . '</p></div><br>';
-        echo '<div class="addbutton">';
-        addAction('webshop', 'addToShoppingcart', $product['id'], $product['name'], 1);
+        echo '<div class="">';
+        addAction(
+            'webshop',
+            'addToShoppingcart',
+            $product['id'],
+            $product['name'],
+            1
+        );
         echo '</div></div></div>' . PHP_EOL;
     }
     echo '  <span class="error">' . $data['genericErr'] . '</span>';

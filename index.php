@@ -4,9 +4,9 @@
 // Main App
 // =================================================================
 
-include 'validations.php';
-include 'session_manager.php';
-include 'products_service.php';
+include_once 'validations.php';
+include_once 'session_manager.php';
+include_once 'products_service.php';
 
 session_start();
 
@@ -117,7 +117,7 @@ function processRequest($page)
         $data['menu']['shoppingcart'] = "Shopping Cart ";
     } else {
         $data['menu']['register'] = "Register";
-        $data['menu']['login'] = "Login";        
+        $data['menu']['login'] = "Login";
     }
     $data['page'] = $page;
     return $data;
