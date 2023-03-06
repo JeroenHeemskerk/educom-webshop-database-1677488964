@@ -30,16 +30,19 @@ function getRequestedPage()
     return $requested_page;
 }
 
+function getArrayVar($array, $key, $default = '')
+{
+    return isset($array[$key]) ? $array[$key] : $default;
+}
+
 function getPostVar($key, $default = '')
 {
-    $value = filter_input(INPUT_POST, $key);
-    return isset($value) ? $value : $default;
+    return getArrayVar($_POST, $key, $default);
 }
 
 function getUrlVar($key, $default = '')
 {
-    $value = filter_input(INPUT_GET, $key);
-    return isset($value) ? $value : $default;
+    return getArrayVar($_GET, $key, $default);
 }
 
 function processRequest($page)
@@ -48,14 +51,19 @@ function processRequest($page)
     switch ($page) {
         case 'home':
         case 'about':
+            break;
         case 'shoppingcart':
+            $data = handleActions();
+            $data = array_merge($data, getShoppingCartProducts());
             break;
         case 'webshop':
-            $data = getWebshopProducts();
+            $data = handleActions();
+            $data = array_merge($data, getWebshopProducts());
             break;
         case 'productdetail':
+            $data = handleActions();
             $id = getUrlVar("id");
-            $data = getProductDetails($id);
+            $data = array_merge($data, getProductDetails($id));
             break;
         case 'contact':
             $data = validateContact();
@@ -109,8 +117,7 @@ function processRequest($page)
         $data['menu']['shoppingcart'] = "Shopping Cart ";
     } else {
         $data['menu']['register'] = "Register";
-        $data['menu']['login'] = "Login";
-        /* ... */
+        $data['menu']['login'] = "Login";        
     }
     $data['page'] = $page;
     return $data;

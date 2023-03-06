@@ -10,12 +10,10 @@ function showContent($data)
         echo '<img src="Images/' . $product['filename_img'] . '" alt="' . $product['name'] . '" width="60" height="80"></a>' . PHP_EOL;
         echo '<div class="text">';
         echo '<div class="id"><p>Id: ' . $product['id'] . '</p></div>' . PHP_EOL;
-        echo '<div class="price"><p>Prijs: &euro;' . $product['price'] . '</p></div><br>';
-        if (isUserLoggedIn()) {
-            showFormStart();
-            showFormEnd('Add to Cart', 'webshop');
-        }
-        echo '</div></div>' . PHP_EOL;
+        echo '<div class="price"><p>Price: &euro;' . $product['price'] . '</p></div><br>';
+        echo '<div class="addbutton">';
+        addAction('webshop', 'addToShoppingcart', $product['id'], $product['name'], 1);
+        echo '</div></div></div>' . PHP_EOL;
     }
     echo '  <span class="error">' . $data['genericErr'] . '</span>';
 }

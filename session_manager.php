@@ -4,6 +4,7 @@ function logUserIn($data)
 {
     $_SESSION['username'] = $data['name'];
     $_SESSION['userid'] = $data['userid'];
+    $_SESSION['shoppingcart'] = array();
 }
 
 function getLoggedInUserId()
@@ -24,4 +25,14 @@ function logUserOut()
 function isUserLoggedIn()
 {
     return isset($_SESSION['username']);
+}
+
+function getShoppingcart()
+{
+    return $_SESSION['shoppingcart'];
+}
+
+function addToShoppingCart($productId, $quantity)
+{
+    $_SESSION['shoppingcart'][$productId] = $quantity;
 }
