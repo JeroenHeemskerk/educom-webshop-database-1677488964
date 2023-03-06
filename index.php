@@ -6,6 +6,8 @@
 
 include 'validations.php';
 include 'session_manager.php';
+include 'products_service.php';
+
 session_start();
 
 $page = getRequestedPage();
@@ -50,6 +52,15 @@ function processRequest($page)
         case 'about':
             $page = 'about';
             break;
+        case 'webshop':
+            $data = getWebshopProducts();
+            $page = 'webshop';
+            break;
+        case 'productdetail':
+            $id = getUrlVar("id");
+            $data = getProductDetails($id);
+            $page = 'productdetail';            
+            break;
         case 'contact':
             $data = validateContact();
             $page = 'contact';
@@ -92,7 +103,8 @@ function processRequest($page)
         default:
             $page = 'unknown';
     }
-    $data['menu'] = array('home' => 'Home', 'about' => 'About', 'contact' => 'Contact');
+    $data['menu'] = array('home' => 'Home', 'about' => 'About', 'contact' => 'Contact', 'webshop' => 'Webshop');
+
     if (isUserLoggedIn()) {
         $data['menu']['logout'] = "Logout " . getLoggedInUserName();
         $data['menu']['changepassword'] = "Change Password ";
@@ -171,6 +183,8 @@ function showHeader($page)
         case 'register':
         case 'login':
         case 'changepassword':
+        case 'webshop':
+        case 'productdetail':
             echo '<header>
         <h1>' . strtoupper($page) . '</h1>
       </header>';

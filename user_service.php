@@ -1,6 +1,6 @@
 <?PHP
 
-include 'file_repository.php';
+include 'db_repository.php';
 
 define("RESULT_OK", 0);
 define("RESULT_WRONG", -1);

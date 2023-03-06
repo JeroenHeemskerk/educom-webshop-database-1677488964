@@ -93,3 +93,46 @@ function changePassword($id, $password)
         mysqli_close($conn);
     }
 }
+
+function getAllProducts()
+{
+
+    $products = array();
+    $conn = connectWithDB();
+    try {
+        $sql = "SELECT * from products;";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            throw new Exception("No result " . mysqli_error($conn));
+        }
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $product = $row;
+                array_push($products, $product);
+            }
+        }
+    } finally {
+        mysqli_close($conn);
+    }
+
+    return $products;
+}
+
+function findProductById($productId)
+{
+    $conn = connectWithDB();
+    $product = NULL;
+    try {
+        $sql = "SELECT * FROM products WHERE id = " . $productId . "";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            throw new Exception("findProductById failed, SQL: " . $sql . "Error: " . mysqli_error($conn));
+        }
+        if (mysqli_num_rows($result) > 0) {
+            $product = mysqli_fetch_assoc($result);
+        }
+        return $product;
+    } finally {
+        mysqli_close($conn);
+    }
+}
