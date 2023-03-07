@@ -35,14 +35,14 @@ function getArrayVar($array, $key, $default = '')
     return isset($array[$key]) ? $array[$key] : $default;
 }
 
-function getPostVar($key, $default = '')
+function getPostVar($key)
 {
-    return getArrayVar($_POST, $key, $default);
+    return getArrayVar($_POST, $key);
 }
 
-function getUrlVar($key, $default = '')
+function getUrlVar($key)
 {
-    return getArrayVar($_GET, $key, $default);
+    return getArrayVar($_GET, $key);
 }
 
 function processRequest($page)

@@ -32,7 +32,12 @@ function getShoppingcart()
     return $_SESSION['shoppingcart'];
 }
 
-function addToShoppingCart($productId, $quantity)
+function updateShoppingCart($productId, $quantity)
 {
     $_SESSION['shoppingcart'][$productId] = $quantity;
+}
+
+function removeFromShoppingcart($productId)
+{
+    unset($_SESSION['shoppingcart'][$productId]);
 }

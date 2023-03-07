@@ -14,7 +14,8 @@ function showContent($data)
         echo '<div class="">';
         addAction(
             'webshop',
-            'addToShoppingcart',
+            'Add to Shopping Cart',
+            'updateShoppingCart',
             $product['id'],
             $product['name'],
             1

@@ -28,7 +28,7 @@ function getProductDetails($productId)
     return array("product" => $product, "genericErr" => $genericErr);
 }
 
-function addAction($nextpage, $action, $productId = NULL, $name = NULL, $addquantity = 0)
+function addAction($nextpage, $button, $action, $productId = NULL, $name = NULL, $addquantity = 0)
 {
     if (isUserLoggedIn()) {
         showFormStart();
@@ -48,7 +48,8 @@ function addAction($nextpage, $action, $productId = NULL, $name = NULL, $addquan
                 echo '<input type="hidden" name="action" value="removeFromShoppingcart">' . PHP_EOL;
             }
         }
-        showFormEnd("Add to Shoppingcart", "webshop");
+
+        showFormEnd($button, $nextpage);
     }
 }
 
@@ -57,10 +58,14 @@ function handleActions()
     $data = array();
     $action = getPostVar("action");
     switch ($action) {
-        case 'addToShoppingcart':
+        case 'updateShoppingCart':
             $productId = getPostVar("id");
             $quantity = getPostVar("quantity");
-            addToShoppingCart($productId, $quantity);
+            updateShoppingCart($productId, $quantity);
+            break;
+        case "removeFromShoppingcart":
+            $productId = getPostVar("id");
+            removeFromShoppingcart($productId);
             break;
     }
     return $data;

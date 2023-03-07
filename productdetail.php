@@ -10,8 +10,9 @@ function showContent($data)
         echo '<p>Description: ' . $data['product']['description'] . '</p><br><br>';
         echo '<p>Price: &euro;' . $data['product']['price'] . '</p></a>';
         addAction(
-            'webshop',
-            'addToShoppingcart',
+            'shoppingcart',
+            'Add to Shopping Cart',
+            'updateShoppingCart',
             $data['product']['id'],
             $data['product']['name'],
             1
