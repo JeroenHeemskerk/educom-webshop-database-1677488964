@@ -63,14 +63,15 @@ function handleActions()
             $quantity = getPostVar("quantity");
             updateShoppingCart($productId, $quantity);
             break;
-        case "removeFromShoppingcart":
+        case 'removeFromShoppingcart':
             $productId = getPostVar("id");
             removeFromShoppingcart($productId);
             break;
-        case 'order':
+        case 'order':            
             $user_id = getLoggedInUserId();
             $data = getShoppingcartProducts();
             $data = storeOrder($user_id, $data['shoppingcartproducts']);
+            emptyShoppingCart();            
             break;
     }
     return $data;
@@ -103,8 +104,7 @@ function getShoppingcartProducts()
     return array("shoppingcartproducts" => $shoppingcartproducts, "total" => number_format((float)($total), 2), "genericErr" => $genericErr);
 }
 
-function storeOrder($user_id, $shoppingcartproducts) {
-
+function storeOrder($user_id, $shoppingcartproducts)
+{
     saveOrder($user_id, $shoppingcartproducts);
-
 }

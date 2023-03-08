@@ -50,6 +50,8 @@ function processRequest($page)
 
     switch ($page) {
         case 'home':
+            $data = handleActions();
+            break;
         case 'about':
             break;
         case 'shoppingcart':

@@ -123,10 +123,11 @@ function findProductById($productId)
     $conn = connectWithDB();
     $product = NULL;
     try {
-        $sql = "SELECT * FROM products WHERE id = " . $productId . "";
+        $sql = "SELECT * FROM products WHERE id = $productId";
         $result = mysqli_query($conn, $sql);
         if (!$result) {
-            throw new Exception("findProductById failed, SQL: " . $sql . "Error: " . mysqli_error($conn));
+            throw new Exception("findProductById failed, SQL: " . $sql .
+                "Error: " . mysqli_error($conn));
         }
         if (mysqli_num_rows($result) > 0) {
             $product = mysqli_fetch_assoc($result);
@@ -140,10 +141,12 @@ function findProductById($productId)
 function saveOrder($user_id, $shoppingcartproducts)
 {
     $conn = connectWithDB();
-    try { // 1. insert order
+    try {
+
+        // 1. insert order
         $order_nr = date("Y") . "000000";
-        $sql = "INSERT INTO orders ('user_id', 'date', 'order_nr') 
-    VALUES ('$user_id', CURRENT_DATE(), '$order_nr')";
+        $sql = "INSERT INTO orders (user_id, date, order_nr) 
+        VALUES ('$user_id', CURRENT_DATE(), '$order_nr')";
         $result = mysqli_query($conn, $sql);
         if (!$result) {
             throw new Exception("Save order insert userid and currentdate failed" . $sql . mysqli_error($conn));
@@ -159,9 +162,10 @@ function saveOrder($user_id, $shoppingcartproducts)
         }
         $row = mysqli_fetch_array($result);
         $maxOrderNr = $row[0];
+        $updatedOrderNr = $maxOrderNr + 1;
 
         // 3. update current record with ordernr + 1
-        $sql = "UPDATE orders SET 'order_nr' = ($maxOrderNr + 1) WHERE 'order_id' = '$order_id'";
+        $sql = "UPDATE orders SET order_nr = $updatedOrderNr WHERE id = $order_id";
         $result = mysqli_query($conn, $sql);
         if (!$result) {
             throw new Exception("Update ordernr failed, SQL: " . $sql . "Error: " . mysqli_error($conn));
@@ -169,8 +173,8 @@ function saveOrder($user_id, $shoppingcartproducts)
 
         // 4. insert order products
         foreach ($shoppingcartproducts as $product) {
-            $sql = "INSERT INTO order_products ('order_id', 'product_id', 'quantity')
-            VALUES ('$order_id', " . $product['productId'] . "," . $product['quantity'] . ")";
+            $sql = "INSERT INTO order_products (order_id, product_id, quantity)
+            VALUES ($order_id, " . $product['productId'] . "," . $product['quantity'] . ")";
             $result = mysqli_query($conn, $sql);
             if (!$result) {
                 throw new Exception("Insert into order products failed, SQL: " . $sql . "Error: " . mysqli_error($conn));

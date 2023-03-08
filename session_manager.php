@@ -41,3 +41,8 @@ function removeFromShoppingcart($productId)
 {
     unset($_SESSION['shoppingcart'][$productId]);
 }
+
+function emptyShoppingCart()
+{
+    $_SESSION['shoppingcart'] = array();
+}
