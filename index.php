@@ -67,6 +67,9 @@ function processRequest($page)
             $id = getUrlVar("id");
             $data = array_merge($data, getProductDetails($id));
             break;
+        case 'topfive':
+            $data = getTopProducts();
+            break;
         case 'contact':
             $data = validateContact();
             if ($data['valid']) {
@@ -80,7 +83,7 @@ function processRequest($page)
                     storeUser($data['email'], $data['name'], $data['password']);
                     $page = 'login';
                 } catch (Exception $e) {
-                    $data['emailErr'] = "Name could not be stored due to a technical error";
+                    $data['genericErr'] = "Name could not be stored due to a technical error";
                     debug_to_console("Store user failed" . $e->getMessage());
                 }
             }
@@ -103,7 +106,7 @@ function processRequest($page)
                     updatePassword($data['id'], $data['newPassword']);
                     $page = 'home';
                 } catch (Exception $e) {
-                    $data['passwordErr'] = "Password could not be changed due to a technical error";
+                    $data['confirmPasswordErr'] = "Password could not be changed due to a technical error";
                     debug_to_console("Change user password failed" . $e->getMessage());
                 }
             }
@@ -111,7 +114,7 @@ function processRequest($page)
         default:
             $page = 'unknown';
     }
-    $data['menu'] = array('home' => 'Home', 'about' => 'About', 'contact' => 'Contact', 'webshop' => 'Webshop');
+    $data['menu'] = array('home' => 'Home', 'about' => 'About', 'contact' => 'Contact', 'webshop' => 'Webshop', 'topfive' => 'Top Five Products');
 
     if (isUserLoggedIn()) {
         $data['menu']['logout'] = "Logout " . getLoggedInUserName();
@@ -156,7 +159,7 @@ function showHeadSection($page)
     echo '<head>
     <title>' . strtoupper($page) . '</title>
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="CSS/favicon.ico">
   </head>';
 }
 
@@ -194,6 +197,7 @@ function showHeader($page)
         case 'webshop':
         case 'productdetail':
         case 'shoppingcart':
+        case 'topfive':
             echo '<header>
         <h1>' . strtoupper($page) . '</h1>
       </header>';
@@ -247,6 +251,10 @@ function endDocument()
 {
     echo  '</html>';
 }
+
+// =================================================================
+// Logging
+// =================================================================
 
 function debug_to_console($data)
 {

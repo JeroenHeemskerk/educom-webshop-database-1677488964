@@ -4,7 +4,7 @@ function connectWithDB()
 {
 
     $servername = "localhost";
-    $username = "webshop_Lydia";
+    $username = "webshop_Lydi";
     $password = "shoplvg";
     $dbname = "lydia_webshop";
 
@@ -17,6 +17,10 @@ function connectWithDB()
     }
     return $conn;
 }
+
+// =================================================================
+// Users
+// =================================================================
 
 function findUserByEmail($email)
 {
@@ -93,6 +97,10 @@ function changePassword($id, $password)
         mysqli_close($conn);
     }
 }
+
+// =================================================================
+// Webshop
+// =================================================================
 
 function getAllProducts()
 {
@@ -183,4 +191,33 @@ function saveOrder($user_id, $shoppingcartproducts)
     } finally {
         mysqli_close($conn);
     }
+}
+
+function getTopFive()
+{
+    $conn = connectWithDB();
+    try {
+        $sql = "SELECT p.id, p.name, p.price, p.filename_img, SUM(op.quantity) AS quantity
+        FROM products p
+        LEFT JOIN order_products op ON p.id=op.product_id
+        LEFT JOIN orders o ON op.order_id=o.id
+        AND DATEDIFF(CURRENT_DATE(), o.date) < 7
+        GROUP BY p.id
+        ORDER BY quantity DESC
+        LIMIT 5";
+        $result['topproducts'] =  mysqli_query($conn, $sql);
+        $topproducts = array();
+        if (!$result) {
+            throw new Exception("Get top five failed, SQL: " . $sql . "Error: " . mysqli_error($conn));
+        }
+        if (mysqli_num_rows($result['topproducts']) > 0) {
+            while ($row = mysqli_fetch_assoc($result['topproducts'])) {
+                $topproduct = $row;
+                $topproducts[$topproduct['id']] = $topproduct;
+            }
+        }
+    } finally {
+        mysqli_close($conn);
+    }
+    return $topproducts;
 }

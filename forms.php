@@ -45,6 +45,7 @@ function showFormField($field, $label, $type, $data, $required = true, $options 
     echo '</label>';
     if (array_key_exists($field . "Err", $data)) {
         echo '  <span class="error">' . $data[$field . "Err"] . '</span>';
+        echo '  <span class="error">' . $data['genericErr'] . '</span>';
     }
 }
 

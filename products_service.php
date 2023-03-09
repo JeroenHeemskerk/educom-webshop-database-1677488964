@@ -67,11 +67,11 @@ function handleActions()
             $productId = getPostVar("id");
             removeFromShoppingcart($productId);
             break;
-        case 'order':            
+        case 'order':
             $user_id = getLoggedInUserId();
             $data = getShoppingcartProducts();
             $data = storeOrder($user_id, $data['shoppingcartproducts']);
-            emptyShoppingCart();            
+            emptyShoppingCart();
             break;
     }
     return $data;
@@ -107,4 +107,17 @@ function getShoppingcartProducts()
 function storeOrder($user_id, $shoppingcartproducts)
 {
     saveOrder($user_id, $shoppingcartproducts);
+}
+
+function getTopProducts()
+{
+    $topFiveProducts = array();
+    $genericErr = "";
+    try {
+        $topFiveProducts = getTopFive();
+    } catch (Exception $e) {
+        $genericErr = "Sorry, cannot show top products at this moment.";
+        debug_to_console("getTopProducts failed  " . $e->getMessage());
+    }
+    return array("products" => $topFiveProducts, "genericErr" => $genericErr);
 }

@@ -95,7 +95,7 @@ function validateContact()
         if (
             $data['nameErr'] === "" && $data['emailErr'] === ""
             && $data['phoneErr'] === "" && $data['contactOptionErr'] === ""
-            && $data['messageErr'] === ""
+            && $data['messageErr'] === "" && $data['genericErr'] === ""
         ) {
             $data['valid'] = true;
         };
@@ -112,7 +112,7 @@ function validateRegistration()
         "name" => "", "email" => "", "password" => "",
         "confirmPassword" => test_input(getPostVar("confirmPassword")),
         "nameErr" => "", "emailErr" => "", "passwordErr" => "",
-        "confirmPasswordErr" => "", "valid" => false
+        "confirmPasswordErr" => "", "genericErr" => "", "valid" => false
     );
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -132,8 +132,10 @@ function validateRegistration()
 
         if (
             $data['name'] !== "" && $data['email'] !== "" && $data['password'] !== "" &&
-            $data['confirmPassword'] !== "" && $data['nameErr'] === "" && $data['emailErr'] === "" &&
-            $data['passwordErr'] === "" && $data['confirmPasswordErr'] === ""
+            $data['confirmPassword'] !== "" && $data['nameErr'] === ""
+            && $data['emailErr'] === "" &&
+            $data['passwordErr'] === "" && $data['confirmPasswordErr'] === "" &&
+            $data['genericErr'] === ""
         ) {
             //try catch 
             if (doesEmailExist($data['email'])) {
@@ -158,7 +160,7 @@ function validateLogin()
         "userid" => test_input(getPostVar("userid")),
         "name" => test_input(getPostVar("name")), "email" => "",
         "password" => "", "emailErr" => "",
-        "passwordErr" => "",  "valid" => false
+        "passwordErr" => "", "genericErr" => "", "valid" => false
     );
 
 
@@ -185,7 +187,7 @@ function validateLogin()
                         break;
                 }
             } catch (Exception $e) {
-                $data['emailErr'] = "There is a technical issue, please try again later.";
+                $data['genericErr'] = "There is a technical issue, please try again later.";
                 debug_to_console("Authentication failed: " . $e->getMessage());
             }
         }
@@ -199,7 +201,7 @@ function validateChangePassword()
     $data = array(
         "id" => getLoggedInUserId(), "password" => "",
         "newPassword" => test_input(getPostVar("newPassword")), "passwordErr" => "",
-        "newPasswordErr" => "", "valid" => false
+        "newPasswordErr" => "", "genericErr" => "", "valid" => false
     );
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -213,7 +215,8 @@ function validateChangePassword()
         if (
             $data['password'] !== "" && $data['newPassword'] !== "" &&
             $data['passwordErr'] === "" &&
-            $data['newPasswordErr'] === ""
+            $data['newPasswordErr'] === "" &&
+            $data['genericErr'] === ""
         )
             try {
                 $authenticate =
@@ -227,7 +230,7 @@ function validateChangePassword()
                         break;
                 }
             } catch (Exception $e) {
-                $data['passwordErr'] = "There is a technical issue, please try again later.";
+                $data['genericErr'] = "There is a technical issue, please try again later.";
                 debug_to_console("Authentication failed: " . $e->getMessage());
             }
     }
